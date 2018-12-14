@@ -1,0 +1,178 @@
+
+Question #1
+-----------
+
+A random sample of size 10 was taken form a normal population. If the observations are 65,71,64,71,70,69,64,63,67, and 68, test the hypothesis that the population mean is 69 inches. Also obtain 99% confidence interval for the population mean
+
+```{r}
+dat=c(67,71,64,71,70,69,64,63,67,68)
+t.test(dat,mu=69)
+```
+We accept the null hypothesis since the t value falls under the confidence interval
+```{r}
+t.test(dat,mu=69,conf.level = .99)
+```
+
+#Function to find the zvalue#
+
+```{r}
+zvalue = function(x,myu,psigma=NULL,ssigma=NULL,n)
+{
+  if(missing(psigma))
+  {
+    no=sqrt(n)
+    z=(x-myu)/(ssigma/no)
+    return(z)
+  }
+  else
+  {
+    no=sqrt(n)
+    z=(x-myu)/(psigma/no)
+    return(z)
+  }
+}
+```
+
+#function to find the SNT values#
+```{r}
+zsig=function(sig.level,tail1=c("One","Two"))
+{
+  if("One" %in% tail1)
+  {
+    return(abs(qnorm(sig.level)))
+  }
+  else
+  {
+    return(abs(qnorm(sig.level/2)))
+  }
+  
+}
+```
+
+#Function to find the ztable values according to the tail#
+
+```{r}
+ztail=function(sig.level,tail2=c("L","R","T"))
+{
+  if("L" %in% tail2)
+  {
+    t1=-(zsig(sig.level))
+    return(t1)
+  }
+  else if("R" %in% tail2)
+  {
+    t1=(zsig(sig.level))
+    return(t1) 
+  }
+  else
+  {
+    t1=-(zsig(sig.level,2))
+    t2=(zsig(sig.level,2))
+    return(c(t1,t2))
+  }
+}
+```
+
+
+#Function to find x>myu#
+
+```{r}
+zleft=function(z1,z2)
+{
+if(z1>z2)
+  print("Accept Null Hypothesis")
+else
+  print("Reject Null Hypothesis, and accept Alternative hypothesis")
+}
+
+```
+
+
+#Function to find x!=myu#
+--------------------------
+
+```{r}
+ztwo=function(z1,z2)
+{
+  if(z1>z2[1] && z1<z2[2])
+  {
+    print("Accept Null Hypothesis")
+  }
+  else
+  {
+    print("Reject null hypothesis, and accept alternative hypothesis")
+  }
+}
+```
+
+Question #2
+-------------
+
+A machine part was designed to withstand an average pressure of 120 units. A random sample of size 100 from a large batch was tested and it was found that the average pressure which these parts can withstand is 105 units with a standard deviation of 20 units. Test whether the batch meets the specifications
+
+Null Hypothesis : x=120
+Alternate Hypothesis : x>120
+
+#Arguments of Zvalue are , x=sample mean,myu=population mean,psigma=population standard deviation,ssigma=Sample standard deviation,n=sample size#
+
+```{r}
+z1=zvalue(x=105,myu=120,ssigma = 20,n=100)
+z1
+```
+#Arguments of Ztail are , sig.level=Significance level , tail2= "Left" or "Right" or "Two" tailed
+
+```{r}
+z2=ztail(sig.level = 0.05,tail2 = "L")
+z2
+```
+
+#Arguments for zleft are , z1=zvalue from the data , z2=zvalue from the table
+
+```{r}
+zleft(z1,z2)
+```
+
+Question #3
+------------
+
+A sample of 400 male students is found to have a mean height 171.38 cms. Can it be reasonably regarded as a sample from a large population with mean height 171.7cms and s.d 3.30
+
+Null Hypothesis : x=171.7
+Alternate Hypothesis : x !=120
+
+```{r}
+
+z3=zvalue(x=171.38,myu=171.7,psigma = 3.30,n=400)
+z3
+```
+
+```{r}
+z4=ztail(sig.level = .05,tail2="T")
+z4
+```
+
+```{r}
+ztwo(z3,z4)
+```
+
+Question #4
+-------------
+
+Ten oil tins taken at random from an automatic filling machine shows that mean weight of tin is 16.52 kg with a standard deviation of .5kg. Does the sample mean differ significantly from the standard weight of 17kg
+
+Null Hypothesis : x=17kg
+Alternate Hypothesis : x!=17
+
+```{r}
+z5=zvalue(x=16.52,myu=17,ssigma = .5,n=10)
+z5
+```
+
+```{r}
+z6=ztail(sig.level = .05,tail="T")
+z6
+```
+
+```{r}
+ztwo(z5,z6)
+```
